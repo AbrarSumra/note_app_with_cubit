@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wscube_cubit/ListCubit/list_state.dart';
 
@@ -6,9 +9,21 @@ class ListCubit extends Cubit<ListState> {
 
   /// Add Note
   void addNote(Map<String, dynamic> newNote) {
-    var currData = state.mData;
-    currData.add(newNote);
-    emit(ListState(mData: currData));
+    emit(ListState(mData: state.mData, isLoading: true));
+    Timer(const Duration(seconds: 2), () {
+      var random = Random().nextInt(100);
+      if (random % 5 == 0) {
+        emit(ListState(
+            mData: state.mData,
+            isLoading: false,
+            isError: true,
+            errorMsg: "Data not added"));
+      } else {
+        var currData = state.mData;
+        currData.add(newNote);
+        emit(ListState(mData: currData, isLoading: false, isError: false));
+      }
+    });
   }
 
   /// Update Note
